@@ -1,0 +1,109 @@
+/* ================= GLOBAL ================= */
+QMainWindow {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    font-family: "Segoe UI";
+    font-size: 13px;
+}
+
+/* ================= SIDEBAR ================= */
+QWidget#sidebar {
+    background-color: #020617;
+    border-right: 1px solid #1e293b;
+}
+
+/* ================= TOP BAR ================= */
+QWidget {
+    color: #e2e8f0;
+}
+
+QLabel {
+    color: #e2e8f0;
+}
+
+/* ================= BUTTONS ================= */
+QPushButton {
+    background-color: transparent;
+    color: #cbd5f5;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: left;
+}
+
+QPushButton:hover {
+    background-color: #1e293b;
+}
+
+QPushButton:pressed {
+    background-color: #334155;
+}
+
+/* Special buttons (top bar controls) */
+QPushButton[text="✕"] {
+    color: #f87171;
+}
+QPushButton[text="✕"]:hover {
+    background-color: #7f1d1d;
+}
+
+QPushButton[text="—"]:hover {
+    background-color: #1e293b;
+}
+
+/* ================= INPUTS ================= */
+QLineEdit {
+    background-color: #020617;
+    border: 1px solid #334155;
+    padding: 8px;
+    border-radius: 6px;
+    color: #e2e8f0;
+}
+
+QLineEdit:focus {
+    border: 1px solid #3b82f6;
+}
+
+/* ================= TABLE ================= */
+QTableWidget {
+    background-color: #020617;
+    gridline-color: #334155;
+    border: none;
+    alternate-background-color: #020617;
+    selection-background-color: #1e293b;
+    selection-color: #ffffff;
+}
+
+QTableWidget::item {
+    padding: 6px;
+}
+
+QTableWidget::item:hover {
+    background-color: #1e293b;
+}
+
+QHeaderView::section {
+    background-color: #1e293b;
+    padding: 6px;
+    border: none;
+    font-weight: bold;
+}
+
+/* ================= SCROLLBAR ================= */
+QScrollBar:vertical {
+    background: #020617;
+    width: 8px;
+}
+
+QScrollBar::handle:vertical {
+    background: #334155;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #475569;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+}
