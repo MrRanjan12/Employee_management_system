@@ -12,19 +12,14 @@ QWidget#sidebar {
     border-right: 1px solid #1e293b;
 }
 
-/* ================= TOP BAR ================= */
-QWidget {
-    color: #e2e8f0;
-}
-
-QLabel {
+/* ================= TEXT ================= */
+QLabel, QPushButton {
     color: #e2e8f0;
 }
 
 /* ================= BUTTONS ================= */
 QPushButton {
     background-color: transparent;
-    color: #cbd5f5;
     padding: 10px;
     border-radius: 6px;
     text-align: left;
@@ -38,15 +33,16 @@ QPushButton:pressed {
     background-color: #334155;
 }
 
-/* Special buttons (top bar controls) */
-QPushButton[text="✕"] {
+/* ================= SPECIAL BUTTONS ================= */
+QPushButton#closeBtn {
     color: #f87171;
 }
-QPushButton[text="✕"]:hover {
+
+QPushButton#closeBtn:hover {
     background-color: #7f1d1d;
 }
 
-QPushButton[text="—"]:hover {
+QPushButton#minBtn:hover {
     background-color: #1e293b;
 }
 
@@ -106,4 +102,9 @@ QScrollBar::handle:vertical:hover {
 QScrollBar::add-line:vertical,
 QScrollBar::sub-line:vertical {
     height: 0;
+}
+
+/* ================= SAFE FIX ================= */
+QFrame {
+    border: none;
 }

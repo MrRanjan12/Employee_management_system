@@ -1,9 +1,21 @@
 import sqlite3
+import os
+import sys
+
+
+def get_db_path():
+    if getattr(sys, 'frozen', False):
+        base_path = os.path.dirname(sys.executable)
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    return os.path.join(base_path, "ems.db")
 
 
 class Database:
     def __init__(self):
-        self.conn = sqlite3.connect("ems.db")
+        db_path = get_db_path()
+        self.conn = sqlite3.connect(db_path)
         self.create_tables()
 
     def create_tables(self):
@@ -17,15 +29,13 @@ class Database:
         )
         """)
 
-        # Employees table (UPDATED)
+        # ✅ UPDATED Employees table (MATCH UI)
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS employees(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            designation TEXT,
-            department TEXT,
-            salary REAL,
-            deduction REAL DEFAULT 0
+            role TEXT,
+            salary REAL
         )
         """)
 
@@ -51,11 +61,21 @@ class Database:
         )
 
     # ===== EMPLOYEES =====
-    def add_employee(self, name, designation, department, salary, deduction=0):
+    def add_employee(self, name, role, salary):
         self.execute("""
-            INSERT INTO employees(name, designation, department, salary, deduction)
-            VALUES (?, ?, ?, ?, ?)
-        """, (name, designation, department, salary, deduction))
+            INSERT INTO employees(name, role, salary)
+            VALUES (?, ?, ?)
+        """, (name, role, salary))
+
+    def update_employee(self, emp_id, name, role, salary):
+        self.execute("""
+            UPDATE employees
+            SET name=?, role=?, salary=?
+            WHERE id=?
+        """, (name, role, salary, emp_id))
+
+    def delete_employee(self, emp_id):
+        self.execute("DELETE FROM employees WHERE id=?", (emp_id,))
 
     def get_employee(self, emp_id):
         cursor = self.conn.cursor()
@@ -65,4 +85,12 @@ class Database:
     def get_all_employees(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM employees")
+        return cursor.fetchall()
+
+    def search_employees(self, keyword):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT * FROM employees
+            WHERE name LIKE ? OR role LIKE ?
+        """, (f"%{keyword}%", f"%{keyword}%"))
         return cursor.fetchall()

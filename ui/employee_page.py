@@ -170,6 +170,7 @@ class EmployeePage(QWidget):
                 border: 1px solid #e5e7eb;
                 padding: 18px;
                 color:gray;
+            }    
         """
 
     def search_style(self):
@@ -279,8 +280,9 @@ class EmployeePage(QWidget):
             self.controller.add_employee(emp)
             self.clear_fields()
             self.load_data()
-        except:
-            QMessageBox.warning(self, "Error", "Invalid Input")
+        except Exception as e:
+         print("ERROR:", e)   # 🔥 THIS WILL SHOW REAL ISSUE
+         QMessageBox.warning(self, "Error", str(e))
 
     def select_row(self, row, column):
         self.selected_id = int(self.table.item(row, 0).text())
@@ -320,3 +322,5 @@ class EmployeePage(QWidget):
         self.name.clear()
         self.role.clear()
         self.salary.clear()
+    
+    

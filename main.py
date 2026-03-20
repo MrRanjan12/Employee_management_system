@@ -10,7 +10,7 @@ from ui.login_window import LoginWindow
 
 def main():
     app = QApplication(sys.argv)
-
+    app.setApplicationName("NexStaff")
     # Load styles (safe loading)
     try:
         with open("assets/styles.qss", "r") as f:

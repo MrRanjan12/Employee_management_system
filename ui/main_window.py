@@ -1,11 +1,22 @@
+import sys
+import os
+
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QPushButton, QLabel, QStackedWidget
 )
 from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtGui import QIcon, QPixmap
 
 from ui.employee_page import EmployeePage
 from ui.salary_page import SalaryPage
+
+
+# ✅ UNIVERSAL RESOURCE PATH (100% WORKING)
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 
 class MainWindow(QMainWindow):
@@ -13,12 +24,18 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.db = db
 
+        # ✅ FIXED ICON LOAD (FINAL)
+        icon_path = resource_path("assets/logo.ico")
+        print("ICON PATH:", icon_path)
+        print("ICON EXISTS:", os.path.exists(icon_path))
+
+        self.setWindowIcon(QIcon(icon_path))
+
         # Frameless window
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.showMaximized()
 
         self.old_pos = None
-
         self.init_ui()
 
     def init_ui(self):
@@ -32,6 +49,7 @@ class MainWindow(QMainWindow):
         top_bar.setStyleSheet("""
             background-color: white;
             border-bottom: 1px solid #e5e7eb;
+            color:black;
         """)
 
         top_layout = QHBoxLayout()
@@ -44,24 +62,13 @@ class MainWindow(QMainWindow):
             color: #111827;
         """)
 
-        # ===== BUTTONS =====
         btn_min = QPushButton("—")
         btn_max = QPushButton("▢")
         btn_close = QPushButton("✕")
 
         for btn in [btn_min, btn_max, btn_close]:
             btn.setFixedSize(32, 32)
-            btn.setStyleSheet("""
-                QPushButton {
-                    border: none;
-                    border-radius: 6px;
-                }
-                QPushButton:hover {
-                    background-color: #f3f4f6;
-                }
-            """)
 
-        # ===== BUTTON ACTIONS =====
         btn_min.clicked.connect(self.showMinimized)
 
         def toggle_maximize():
@@ -75,7 +82,6 @@ class MainWindow(QMainWindow):
         btn_max.clicked.connect(toggle_maximize)
         btn_close.clicked.connect(self.close)
 
-        # ===== ADD TOP BAR =====
         top_layout.addWidget(title)
         top_layout.addStretch()
         top_layout.addWidget(btn_min)
@@ -97,6 +103,20 @@ class MainWindow(QMainWindow):
         sidebar.setContentsMargins(20, 20, 20, 10)
         sidebar.setSpacing(10)
 
+        # ✅ LOGO FIX (FINAL)
+        logo = QLabel()
+        logo_path = resource_path("assets/logo.png")
+
+        print("LOGO PATH:", logo_path)
+        print("LOGO EXISTS:", os.path.exists(logo_path))
+
+        pixmap = QPixmap(logo_path)
+
+        if not pixmap.isNull():
+            logo.setPixmap(pixmap.scaled(40, 40, Qt.AspectRatioMode.KeepAspectRatio))
+        else:
+            print("❌ Logo failed to load")
+
         title_sidebar = QLabel("EMS Pro")
         title_sidebar.setStyleSheet("""
             color: white;
@@ -113,6 +133,7 @@ class MainWindow(QMainWindow):
 
         self.set_active(self.btn_employees)
 
+        sidebar.addWidget(logo)
         sidebar.addWidget(title_sidebar)
         sidebar.addSpacing(20)
         sidebar.addWidget(self.btn_employees)
@@ -124,28 +145,24 @@ class MainWindow(QMainWindow):
         # -------- STACKED PAGES --------
         self.stack = QStackedWidget()
 
-        # ✅ IMPORTANT FIX: db pass karo
         self.employee_page = EmployeePage(self.db)
         self.salary_page = SalaryPage(self.db)
 
         self.stack.addWidget(self.employee_page)
         self.stack.addWidget(self.salary_page)
 
-        # Navigation
         self.btn_employees.clicked.connect(lambda: self.switch_page(0))
         self.btn_salary.clicked.connect(lambda: self.switch_page(1))
 
         content_layout.addWidget(sidebar_widget)
         content_layout.addWidget(self.stack)
 
-        # ================= FINAL LAYOUT =================
         main_layout.addWidget(top_bar)
         main_layout.addLayout(content_layout)
 
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
-    # ================= SIDEBAR STYLE =================
     def sidebar_btn(self):
         return """
             QPushButton {
@@ -177,7 +194,6 @@ class MainWindow(QMainWindow):
             }
         """)
 
-    # ================= DRAG WINDOW =================
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.old_pos = event.globalPosition().toPoint()
@@ -188,7 +204,6 @@ class MainWindow(QMainWindow):
             self.move(self.x() + delta.x(), self.y() + delta.y())
             self.old_pos = event.globalPosition().toPoint()
 
-    # ================= PAGE SWITCH =================
     def switch_page(self, index):
         self.stack.setCurrentIndex(index)
 
